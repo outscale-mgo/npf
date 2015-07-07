@@ -3,7 +3,7 @@
 # This file is in the Public Domain.
 #
 
-CFLAGS=		-std=gnu99 -O2 -flto -g -Wall -Wextra -Werror
+CFLAGS=		-std=gnu99 -O2 -flto -g -Wall -Wextra #-Werror
 CFLAGS+=	-Wstrict-prototypes -Wmissing-prototypes -Wpointer-arith
 CFLAGS+=	-I stand -D_NPF_STANDALONE
 CFLAGS+=	-D__RCSID\(x\)=
@@ -21,6 +21,7 @@ CFLAGS+=	-D_NPF_TESTING
 else
 CFLAGS+=	-fvisibility=hidden
 CFLAGS+=	-DNDEBUG
+CFLAGS+=	-D_NPF_TESTING
 LDFLAGS=	-flto
 endif
 LDFLAGS+=	-lpthread -lpcap -lcdb -lprop -lbpfjit

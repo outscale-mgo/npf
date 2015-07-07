@@ -5,7 +5,7 @@
 
 BIN=		npftest
 
-CFLAGS=		-std=gnu99 -Wall -Wextra -Werror -g
+CFLAGS=		-std=gnu99 -Wall -Wextra # -Werror -g
 CFLAGS+=	-Wstrict-prototypes -Wmissing-prototypes -Wpointer-arith
 CFLAGS+=	-I ../kern -I ../kern/stand -D_NPF_STANDALONE
 CFLAGS+=	-D__RCSID\(x\)=

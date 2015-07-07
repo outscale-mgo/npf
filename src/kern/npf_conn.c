@@ -995,7 +995,13 @@ err:
 	return EINVAL;
 }
 
-#if defined(DDB) || defined(_NPF_TESTING)
+/* #if defined(DDB) || defined(_NPF_TESTING) */
+
+npf_conn_t *
+npf_conn_next(npf_conn_t *con)
+{
+	return con->c_next;
+}
 
 void
 npf_conn_print(const npf_conn_t *con)
@@ -1028,4 +1034,4 @@ npf_conn_print(const npf_conn_t *con)
 	}
 }
 
-#endif
+/* #endif */

@@ -5,7 +5,7 @@
 
 BIN=		npfctl
 
-CFLAGS=		-std=gnu99 -O2 -flto -g -Wall -Wextra -Werror
+CFLAGS=		-std=gnu99 -O2 -flto -g -Wall -Wextra # -Werror
 CFLAGS+=	-Wstrict-prototypes -Wmissing-prototypes -Wpointer-arith
 CFLAGS+=	-I. -D__RCSID\(x\)= -D__dead= -D__printflike\(x,y\)=
 

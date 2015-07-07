@@ -3,7 +3,7 @@
 # This file is in the Public Domain.
 #
 
-CFLAGS=		-std=gnu99 -O2 -g -Wall -Wextra -Werror
+CFLAGS=		-std=gnu99 -O2 -g -Wall -Wextra #-Werror
 CFLAGS+=	-Wstrict-prototypes -Wmissing-prototypes -Wpointer-arith
 CFLAGS+=	-I . -I ../kern/stand -D__KERNEL_RCSID\(x,y\)=
 CFLAGS+=	-D_NPF_STANDALONE

@@ -6,10 +6,10 @@
 rpm: npf npfctl
 
 npf: SOURCES
-	rpmbuild -ba -v --define "_topdir ${PWD}" SPECS/npf.spec
+	rpmbuild -ba -v --define "_topdir ${PWD}" SPECS/npf.spec --nodeps
 
 npfctl: SOURCES
-	rpmbuild -ba -v --define "_topdir ${PWD}" SPECS/npfctl.spec
+	rpmbuild -ba -v --define "_topdir ${PWD}" SPECS/npfctl.spec --nodeps
 
 SOURCES:
 	mkdir -p SOURCES && tar czpvf SOURCES/npf.tar.gz ../src

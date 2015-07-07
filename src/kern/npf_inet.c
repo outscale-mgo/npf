@@ -739,7 +739,7 @@ npf_npt66_rwr(const npf_cache_t *npc, u_int which, const npf_addr_t *pref,
 	return 0;
 }
 
-#if defined(DDB) || defined(_NPF_TESTING)
+/* #if defined(DDB) || defined(_NPF_TESTING) */
 
 const char *
 npf_addr_dump(const npf_addr_t *addr, int alen)
@@ -752,4 +752,4 @@ npf_addr_dump(const npf_addr_t *addr, int alen)
 	return "[IPv6]"; // XXX
 }
 
-#endif
+/* #endif */

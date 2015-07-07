@@ -159,6 +159,7 @@ npf_stats_collect(void *mem, void *arg, struct cpu_info *ci)
 	}
 }
 
+
 /*
  * npf_stats: export collected statistics.
  */
@@ -174,3 +175,21 @@ npf_stats(npf_t *npf, void *data)
 	kmem_free(fullst, NPF_STATS_SIZE);
 	return error;
 }
+
+npf_conn_t *
+npf_conn_next(npf_conn_t *con);
+
+__dso_public void
+npf_print_conn_nbr(npf_t *npf)
+{
+	npf_conn_t *conn_lst = npf_conndb_getlist(npf->conn_db);
+	size_t nb = 0;
+	
+	while (conn_lst) {
+		conn_lst = npf_conn_next(conn_lst);
+		++nb;
+	}
+	printf("nb conn: %lu\n", nb);
+	return 0;
+}
+

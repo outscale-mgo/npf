@@ -66,6 +66,9 @@ npf_t *	npf_create(const npf_mbufops_t *, const npf_ifops_t *);
 int	npf_load(npf_t *, void *, npf_error_t *);
 void	npf_destroy(npf_t *);
 
+void
+npf_print_conn_nbr(npf_t *npf);
+
 void	npf_thread_register(npf_t *);
 int	npf_packet_handler(npf_t *, struct mbuf **, struct ifnet *, int);
 void	npf_ifmap_attach(npf_t *, struct ifnet *);
