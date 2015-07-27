@@ -104,6 +104,7 @@ typedef struct npf_algset	npf_algset_t;
 
 typedef void (*npf_workfunc_t)(npf_t *);
 
+
 /*
  * Some artificial limits.
  * Note: very unlikely to have many ALGs.

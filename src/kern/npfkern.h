@@ -40,6 +40,11 @@ struct ifnet;
 #define PFIL_OUT	0x00000002	// outgoing packet
 #endif
 
+/*
+ * NPF_FLAGS
+ */
+#define NPF_CONN_NO_THREADS	0x00000001
+
 typedef struct {
 	const char *	(*getname)(struct ifnet *);
 	struct ifnet *	(*lookup)(const char *);
@@ -62,7 +67,7 @@ typedef struct {
 int	npf_sysinit(unsigned);
 void	npf_sysfini(void);
 
-npf_t *	npf_create(const npf_mbufops_t *, const npf_ifops_t *);
+npf_t *	npf_create(const npf_mbufops_t *, const npf_ifops_t *, int);
 int	npf_load(npf_t *, void *, npf_error_t *);
 void	npf_destroy(npf_t *);
 

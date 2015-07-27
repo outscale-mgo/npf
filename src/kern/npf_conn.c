@@ -144,7 +144,7 @@ static void	npf_conn_destroy(npf_t *, npf_conn_t *);
  */
 
 void
-npf_conn_sysinit(npf_t *npf)
+npf_conn_sysinit(npf_t *npf, int flags)
 {
 	conn_cache = pool_cache_init(sizeof(npf_conn_t), coherency_unit,
 	    0, 0, "npfconpl", NULL, IPL_NET, NULL, NULL, NULL);
@@ -152,7 +152,8 @@ npf_conn_sysinit(npf_t *npf)
 	npf->conn_tracking = CONN_TRACKING_OFF;
 	npf->conn_db = npf_conndb_create();
 
-	npf_worker_register(npf, npf_conn_worker);
+	if (!(flags & NPF_CONN_NO_THREADS))
+		npf_worker_register(npf, npf_conn_worker);
 }
 
 void
