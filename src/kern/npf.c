@@ -170,3 +170,15 @@ npf_stats(npf_t *npf, uint64_t *buf)
 	memset(buf, 0, NPF_STATS_SIZE);
 	percpu_foreach(npf->stats_percpu, npf_stats_collect, buf);
 }
+
+
+/*
+ * npf_conn gc manipulation.
+ */
+__dso_public void
+npf_conn_call_gc(npf_t *npf)
+{
+	mutex_enter(&npf->conn_lock);
+	/* Note: the conn_lock will be released (sync == true). */
+	npf_conn_gc(npf, npf->conn_db, false, true);
+}

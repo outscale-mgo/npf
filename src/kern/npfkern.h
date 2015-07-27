@@ -72,4 +72,6 @@ void	npf_ifmap_attach(npf_t *, struct ifnet *);
 void	npf_ifmap_detach(npf_t *, struct ifnet *);
 void	npf_stats(npf_t *, uint64_t *);
 
+void	npf_conn_call_gc(npf_t *);
+
 #endif
