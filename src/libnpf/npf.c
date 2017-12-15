@@ -948,7 +948,7 @@ npf_rproc_iterate(nl_config_t *ncf)
 }
 
 const char *
-npf_rproc_getname(nl_rproc_t *rp)
+npf_rproc_getname_int(nl_rproc_t *rp)
 {
 	prop_dictionary_t rpdict = rp->nrp_dict;
 	const char *rpname = NULL;

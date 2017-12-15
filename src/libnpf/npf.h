@@ -141,7 +141,8 @@ int		npf_nat_setalgo(nl_nat_t *, u_int);
 int		npf_nat_setnpt66(nl_nat_t *, uint16_t);
 
 nl_rproc_t *	npf_rproc_iterate(nl_config_t *);
-const char *	npf_rproc_getname(nl_rproc_t *);
+#define npf_rproc_getname(rp) npf_rproc_getname_int(rp)
+const char *    npf_rproc_getname_int(nl_rproc_t *);
 
 int		_npf_ruleset_list(int, const char *, nl_config_t *);
 void		_npf_debug_addif(nl_config_t *, const char *);
