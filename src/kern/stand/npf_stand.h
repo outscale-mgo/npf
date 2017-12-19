@@ -150,7 +150,8 @@ npfkern_atomic_swap_ptr(volatile void *ptr, void *nval)
 
 	do {
 		ptrval = *ptrp;
-		oldval = __sync_val_compare_and_swap(ptrp, ptrval, nval);
+		oldval = __sync_val_compare_and_swap(ptrp, (void **)ptrval,
+						     nval);
 	} while (oldval != ptrval);
 
 	return oldval;
