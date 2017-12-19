@@ -259,7 +259,7 @@ _npf_config_consdict(prop_dictionary_t npf_dict)
 nl_config_t *
 npf_config_retrieve(int fd)
 {
-	prop_dictionary_t npf_dict;
+	prop_dictionary_t npf_dict = NULL;
 	nl_config_t *ncf;
 	int error;
 
@@ -399,7 +399,7 @@ int
 npf_ruleset_add(int fd, const char *rname, nl_rule_t *rl, uint64_t *id)
 {
 	prop_dictionary_t rldict = rl->nrl_dict;
-	prop_dictionary_t ret;
+	prop_dictionary_t ret = NULL;
 	int error;
 
 	prop_dictionary_set_cstring(rldict, "ruleset-name", rname);
@@ -819,7 +819,7 @@ npf_rule_getcode(nl_rule_t *rl, int *type, size_t *len)
 int
 _npf_ruleset_list(int fd, const char *rname, nl_config_t *ncf)
 {
-	prop_dictionary_t rldict, ret;
+	prop_dictionary_t rldict, ret = NULL;
 	int error;
 
 	rldict = prop_dictionary_create();
