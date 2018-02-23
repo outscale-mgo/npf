@@ -1197,7 +1197,7 @@ npf_table_iterate(nl_config_t *ncf)
 }
 
 unsigned
-npf_table_getid(nl_table_t *tl)
+npf_table_getid_int(nl_table_t *tl)
 {
 	prop_dictionary_t tldict = tl->ntl_dict;
 	uint64_t id = (uint64_t)-1;

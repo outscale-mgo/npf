@@ -655,11 +655,15 @@ fail:
 	if (tblset) {
 		npf_tableset_destroy(tblset);
 	}
-	prop_object_release(npf_dict);
 
 	/* Error report. */
 	prop_dictionary_set_int32(errdict, "errno", error);
-	return npf_prop_copyout(cmd, data, errdict);
+	int ret = npf_prop_copyout(cmd, data, errdict);
+	prop_object_release(npf_dict);
+#if defined(_NPF_STANDALONE)
+	prop_object_release(errdict);
+#endif
+	return ret;
 }
 
 /*
