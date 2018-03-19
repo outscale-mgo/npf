@@ -146,6 +146,8 @@ npfkern_qsbr_wait(qsbr_t *qsbr)
  * Atomic operations and memory barriers.
  */
 
+#ifndef _NPF_NO_THREAD
+
 static inline void *
 npfkern_atomic_swap_ptr(volatile void *ptr, void *newval)
 {
@@ -169,6 +171,42 @@ again:
 #define	atomic_cas_32(p, o, n)	__sync_val_compare_and_swap(p, o, n)
 #define	atomic_cas_ptr(p, o, n)	__sync_val_compare_and_swap(p, o, n)
 #define atomic_swap_ptr(x, y)	npfkern_atomic_swap_ptr(x, y)
+
+#else
+
+static inline void *
+npfkern_atomic_swap_ptr(volatile void *ptr, void *newval)
+{
+	/* Solaris/NetBSD API uses *ptr, but it represents **ptr. */
+	void * volatile *ptrp = (void * volatile *)ptr;
+	void *oldval;
+again:
+	oldval = *ptrp;
+	if (!({ int ret = 0;
+				if (*ptrp == oldval) {
+					*ptrp = newval;
+					ret = 1;
+				}
+				ret; })
+		) {
+		goto again;
+	}
+	return oldval;
+}
+
+#define	membar_sync()
+#define	membar_producer()
+#define	atomic_inc_uint(x)	(*x += 1)
+#define	atomic_dec_uint(x)	(*x -= 1)
+#define	atomic_dec_uint_nv(x)	(*x -= 1)
+#define	atomic_or_uint(x, v)	(*x |= v)
+#define	atomic_cas_32(p, o, n)	({ uint32_t ret = *p;	\
+			if (*p == o)  *p = n ; ret; })
+#define	atomic_cas_ptr(p, o, n)	({ void *ret = *p;		\
+			if (*p == o) *p = n; ret; })
+#define atomic_swap_ptr(x, y)	npfkern_atomic_swap_ptr(x, y)
+
+#endif
 
 /*
  * Threads.
