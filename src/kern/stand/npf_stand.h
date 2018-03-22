@@ -75,6 +75,8 @@
 
 #define	NPF_DIAG_MAGIC_VAL	(0x5a5a5a5a)
 
+#ifndef _NPF_NO_THREAD
+
 /*
  * Synchronisation primitives (mutex, condvar, etc).
  */
@@ -146,8 +148,6 @@ npfkern_qsbr_wait(qsbr_t *qsbr)
  * Atomic operations and memory barriers.
  */
 
-#ifndef _NPF_NO_THREAD
-
 static inline void *
 npfkern_atomic_swap_ptr(volatile void *ptr, void *newval)
 {
@@ -172,7 +172,74 @@ again:
 #define	atomic_cas_ptr(p, o, n)	__sync_val_compare_and_swap(p, o, n)
 #define atomic_swap_ptr(x, y)	npfkern_atomic_swap_ptr(x, y)
 
-#else
+#else /* _NPF_NO_THREAD */
+
+/*
+ * Synchronisation primitives (mutex, condvar, etc).
+ */
+
+#define	kmutex_t		pthread_mutex_t
+#define	mutex_init(l, t, i)	pthread_mutex_init(l, NULL)
+#define	mutex_enter(l)
+#define	mutex_exit(l)
+#define	mutex_owned(l)		true
+#define	mutex_destroy(l)
+
+#define	RW_READER		0
+#define	RW_WRITER		1
+
+#define	krwlock_t		pthread_rwlock_t
+#define	rw_init(l)		pthread_rwlock_init(l, NULL)
+#define	rw_destroy(l)		pthread_rwlock_destroy(l)
+#define	rw_enter(l, op)		\
+    (op) == RW_READER ? pthread_rwlock_rdlock(l) : pthread_rwlock_wrlock(l)
+#define	rw_exit(l)		pthread_rwlock_unlock(l)
+
+static inline int
+npfkern_pthread_cond_timedwait(pthread_cond_t *t, pthread_mutex_t *l,
+    const unsigned msec)
+{
+	const unsigned sec = msec / 1000;
+	struct timespec ts;
+
+	clock_gettime(CLOCK_MONOTONIC, &ts);
+	ts.tv_sec += sec;
+	ts.tv_nsec = (msec - (sec * 1000)) * 1000000;
+	return pthread_cond_timedwait(t, l, &ts);
+}
+
+#define	kcondvar_t		pthread_cond_t
+#define	cv_init(c, w)		pthread_cond_init(c, NULL)
+#define	cv_broadcast(c)		pthread_cond_broadcast(c)
+#define	cv_wait(c, l)		pthread_cond_wait(c, l)
+#define	cv_timedwait(c, l, t)	npfkern_pthread_cond_timedwait(c, l, t)
+#define	cv_signal(c)		pthread_cond_signal(c)
+#define	cv_destroy(c)		pthread_cond_destroy(c)
+
+/*
+ * Passive serialization based on QSBR.
+ */
+typedef qsbr_t *		pserialize_t;
+
+static inline void
+npfkern_qsbr_wait(qsbr_t *qsbr)
+{
+	const struct timespec dtime = { 0, 1 * 1000 * 1000 }; /* 1 ms */
+	qsbr_epoch_t target = qsbr_barrier(qsbr);
+
+	while (!qsbr_sync(qsbr, target)) {
+		(void)nanosleep(&dtime, NULL);
+	}
+}
+
+#define	pserialize_create()	qsbr_create()
+#define	pserialize_destroy(p)	qsbr_destroy(p)
+#define	pserialize_register(p)	qsbr_register(p)
+#define	pserialize_unregister(p) qsbr_unregister(p)
+#define	pserialize_checkpoint(p) qsbr_checkpoint(p)
+#define	pserialize_perform(p)	npfkern_qsbr_wait(p)
+#define	pserialize_read_enter()	NPF_DIAG_MAGIC_VAL
+#define	pserialize_read_exit(s)	assert((s) == NPF_DIAG_MAGIC_VAL)
 
 static inline void *
 npfkern_atomic_swap_ptr(volatile void *ptr, void *newval)
@@ -206,7 +273,7 @@ again:
 			if (*p == o) *p = n; ret; })
 #define atomic_swap_ptr(x, y)	npfkern_atomic_swap_ptr(x, y)
 
-#endif
+#endif /* _NPF_NO_THREAD */
 
 /*
  * Threads.
