@@ -378,7 +378,7 @@ struct cpu_info { unsigned id; };
 static inline size_t
 strlcpy(char *dst, const char *src, size_t len)
 {
-	char *p = stpncpy(dst, src, len);
+	char *p = stpncpy(dst, src, len -1);
 	dst[len - 1] = '\0';
 	return strlen(src);
 }
